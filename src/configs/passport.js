@@ -33,7 +33,8 @@ module.exports = (passport) => {
       async (req, email, password, done) => {
         // Check if the user already exits
         const userExists = await User.findOne({ email });
-        if (userExists) done(null, false, { message: "Email already in use." });
+        if (userExists)
+          return done(null, false, { message: "Email already in use." });
 
         // Validation
         const validate = validateCredential(email, password);
