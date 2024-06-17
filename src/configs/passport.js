@@ -6,10 +6,12 @@ const LocalStrategy = require("passport-local").Strategy;
 
 module.exports = (passport) => {
   passport.use(
+    "jwt",
     new JwtStrategy(
       {
         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
         secretOrKey: process.env.SECRET,
+        passReqToCallback: true,
       },
       (payload, done) => {
         User.findOne({ _id: payload.id }, (err, user) => {

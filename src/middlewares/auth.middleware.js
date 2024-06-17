@@ -5,9 +5,9 @@ const authorize = async (req, res, next) => {
     if (err) return next(err);
     if (!id) return res.status(401).json({ message: "Unauthorized" });
     console.log(id);
-    req.body.userId = id;
+    req.body.id = id;
     next();
   })(req, res, next);
 };
 
-module.export = authorize;
+module.exports = authorize;

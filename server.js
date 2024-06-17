@@ -6,6 +6,8 @@ const helmet = require("helmet");
 const cors = require("cors");
 const passport = require("passport");
 const socket = require("socket.io");
+const fileUpload = require("express-fileupload");
+const path = require("path");
 const authorize = require("./src/middlewares/auth.middleware");
 require("./src/configs/passport")(passport);
 
@@ -18,9 +20,19 @@ const io = socket(server, {
   },
 });
 const { authRouter } = require("./src/routes/auth.router");
+const { userRouter } = require("./src/routes/user.router");
 
 // Establish connection with MongoDB
 connectDB();
+
+// File upload
+app.use(express.static(path.resolve(__dirname + "./public")));
+app.use(
+  fileUpload({
+    limits: 5000 * 1024, // 5 mb
+    abortOnLimit: true,
+  })
+);
 
 // Use Helmet and cors
 app.use(helmet());
@@ -47,6 +59,7 @@ app.use(passport.initialize());
 
 // Routes
 app.use("/auth", authRouter);
+app.use("/api", authorize, userRouter);
 
 // Port
 const PORT = process.env.PORT || 3000;
