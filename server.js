@@ -8,7 +8,6 @@ const passport = require("passport");
 const socket = require("socket.io");
 const fileUpload = require("express-fileupload");
 const path = require("path");
-const authorize = require("./src/middlewares/auth.middleware");
 require("./src/configs/passport")(passport);
 
 const app = express();
@@ -19,9 +18,7 @@ const io = socket(server, {
     METHODS: ["GET", "POST"],
   },
 });
-const { authRouter } = require("./src/routes/auth.router");
-const { userRouter } = require("./src/routes/user.router");
-const { imageRouter } = require("./src/routes/image.router");
+const router = require("./src/routes/");
 
 // Establish connection with MongoDB
 connectDB();
@@ -36,13 +33,18 @@ app.use(
 );
 
 // Use Helmet and cors
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+  })
+);
 app.use(
   cors({
     origin: "*",
     methods: ["GET", "POST", "PATCH"],
   })
 );
+app.options("", cors());
 
 // Socket.io
 // io.on("connection", (socket) => {
@@ -60,9 +62,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
 
 // Routes
-app.use("/auth", authRouter);
-app.use("/image", imageRouter);
-app.use("/api", authorize, userRouter);
+app.use(router);
 
 // Port
 const PORT = process.env.PORT || 3000;

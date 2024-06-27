@@ -18,7 +18,7 @@ module.exports = (passport) => {
           if (!user) {
             return done(null, false, { message: "User not found" });
           }
-          return done(null, user);
+          return done(null, payload.id);
         } catch (error) {
           return done(error, false);
         }

@@ -1,9 +1,14 @@
 const express = require("express");
-const { updateProfile } = require("../controllers/user.controller");
-const userRouter = express.Router();
+const {
+  updateProfile,
+  getGlobalUsers,
+  addFriend,
+} = require("../controllers/user.controller");
+const authorize = require("../middlewares/auth.middleware");
+const router = express.Router();
 
-userRouter.patch("/updateProfile", updateProfile);
+router.route("/updateProfile").patch(authorize, updateProfile);
+router.route("/addFriend/:userId").patch(authorize, addFriend);
+router.route("/getGlobalUsers").get(getGlobalUsers);
 
-module.exports = {
-  userRouter,
-};
+module.exports = router;
