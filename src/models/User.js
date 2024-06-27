@@ -24,7 +24,7 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    town: {
+    country: {
       type: String,
       default: "",
     },
@@ -57,6 +57,9 @@ const UserSchema = new mongoose.Schema(
       type: String,
       enum: ["male", "female", ""],
       default: "",
+    },
+    phone: {
+      type: String,
     },
   },
   {

@@ -4,9 +4,9 @@ const crypto = require("crypto");
 
 exports.updateProfile = async (req, res) => {
   // Parse request body
-  const { city, country, birthDate, phone, id } = req.body;
+  const { city, country, birthDate, phone, id, gender, firstName, lastName } =
+    req.body;
   const { profilePicture } = req.files || {};
-
   try {
     const user = await Users.findById(id);
 
@@ -31,7 +31,7 @@ exports.updateProfile = async (req, res) => {
         crypto.randomUUID() + path.extname(profilePicture.name);
 
       // Move profile picture to public directory on images folder
-      profilePicture.mv(
+      await profilePicture.mv(
         path.resolve(__dirname, "../../public/images/" + tempFileName)
       );
 
@@ -39,19 +39,21 @@ exports.updateProfile = async (req, res) => {
       pictureName = `/getImage/${tempFileName}`;
     }
 
-    const updated = await user.updateOne(
-      {
-        profilePicture: pictureName,
-        city,
-        country,
-        birthDate,
-        phone,
-      },
-      { new: true }
-    );
+    user.profilePicture = pictureName || user.profilePicture;
+    user.city = city || user.city;
+    user.country = country || user.country;
+    user.dateOfBirth = birthDate || user.dateOfBirth;
+    user.phone = phone || user.phone;
+    user.gender = gender || user.gender;
+    user.firstName = firstName || user.firstName;
+    user.lastName = lastName || user.lastName;
+
+    // Save update
+    const savedUser = await user.save();
+    console.log(savedUser);
 
     // Return the updated user
-    return res.json({ user, updated });
+    return res.json({ user: savedUser });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal Server Error" });

@@ -11,14 +11,17 @@ module.exports = (passport) => {
       {
         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
         secretOrKey: process.env.SECRET,
-        passReqToCallback: true,
       },
-      (payload, done) => {
-        User.findOne({ _id: payload.id }, (err, user) => {
-          if (err) return done(null, false);
-          if (!user) return done(null, false);
-          return done(null, payload.id);
-        });
+      async (payload, done) => {
+        try {
+          const user = await User.findOne({ _id: payload.id });
+          if (!user) {
+            return done(null, false, { message: "User not found" });
+          }
+          return done(null, user);
+        } catch (error) {
+          return done(error, false);
+        }
       }
     )
   );

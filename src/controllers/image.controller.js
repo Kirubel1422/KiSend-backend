@@ -10,7 +10,8 @@ exports.getImage = async (req, res) => {
   // Get the file from public/images
   const profilePicture = path.resolve(
     __dirname,
-    "../../public/images/" + fileName
+    "../../public/images/",
+    fileName
   );
 
   // Send profile picture

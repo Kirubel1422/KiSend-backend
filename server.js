@@ -21,6 +21,7 @@ const io = socket(server, {
 });
 const { authRouter } = require("./src/routes/auth.router");
 const { userRouter } = require("./src/routes/user.router");
+const { imageRouter } = require("./src/routes/image.router");
 
 // Establish connection with MongoDB
 connectDB();
@@ -39,6 +40,7 @@ app.use(helmet());
 app.use(
   cors({
     origin: "*",
+    methods: ["GET", "POST", "PATCH"],
   })
 );
 
@@ -59,6 +61,7 @@ app.use(passport.initialize());
 
 // Routes
 app.use("/auth", authRouter);
+app.use("/image", imageRouter);
 app.use("/api", authorize, userRouter);
 
 // Port
