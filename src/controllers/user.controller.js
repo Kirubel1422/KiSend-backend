@@ -66,7 +66,7 @@ exports.getUser = async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const user = await User.findById(user);
+    const user = await User.findById(userId);
 
     if (user == null)
       return res.status(400).json({
@@ -93,7 +93,7 @@ exports.getUser = async (req, res) => {
 // Fetch all users
 exports.getGlobalUsers = async (req, res) => {
   try {
-    const users = await Users.find({});
+    const users = await Users.find({}).populate("follows");
 
     // Filter necessary fields
     const filteredData = users.map((item) => {
@@ -105,46 +105,11 @@ exports.getGlobalUsers = async (req, res) => {
         profilePicture: item.profilePicture,
         id: item.id,
         gender: item.gender,
+        follows: item.follows,
       };
     });
 
     res.send({ users: filteredData });
-  } catch (error) {
-    res.status(500).json({ message: "Internal Server Error" });
-    console.log(error);
-  }
-};
-
-exports.addFriend = async (req, res) => {
-  const { userId } = req.params;
-  const { id } = req.body;
-
-  if (!userId)
-    return res.status(404).json({
-      message: "User is not found",
-    });
-
-  try {
-    const user = await User.findById(userId);
-
-    // Prepare a temporary array
-    let tempArr = user.followedBy;
-
-    // Check if they are already friends
-    if (tempArr.find((item) => item == id))
-      return res.status(400).json({ message: "Already friends!" });
-
-    // Add to followedby array
-    tempArr.push(id);
-
-    user.followedBy = tempArr;
-
-    // Save the user
-    await user.save();
-
-    res.json({
-      message: "Successfully added" + ` ${user.firstName}`,
-    });
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
     console.log(error);

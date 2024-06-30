@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const { mongoose, Schema } = require("mongoose");
 const bcrypt = require("bcryptjs");
 
 const UserSchema = new mongoose.Schema(
@@ -32,18 +32,12 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    followedBy: {
-      type: Array,
-      default: [],
-    },
-    follows: {
-      type: Array,
-      default: [],
-    },
-    blackList: {
-      type: Array,
-      default: [],
-    },
+    follows: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Follows",
+      },
+    ],
     role: {
       type: String,
       default: "User",
