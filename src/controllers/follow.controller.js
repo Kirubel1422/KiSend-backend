@@ -11,6 +11,8 @@ exports.followUser = async (req, res) => {
       "follows"
     );
 
+    console.log(followedUser);
+
     // If the user doesn't exists, send error message
     if (!followedUser)
       return res.status(400).json({ message: "User doesn't exist" });

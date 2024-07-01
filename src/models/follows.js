@@ -1,6 +1,6 @@
 const { mongoose, Schema } = require("mongoose");
 
-const FollowSchema = mongoose.Schema(
+const FollowSchema = new Schema(
   {
     firstName: {
       type: String,
