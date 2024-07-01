@@ -3,11 +3,13 @@ const Users = require("../models/User"); // All Users
 
 exports.followUser = async (req, res) => {
   const { followedUserId } = req.params;
-  const { userId } = req.body;
+  const { id } = req.body;
 
   try {
     // Check if the user exists;
-    const followedUser = await Users.findById(followedUserId);
+    const followedUser = await Users.findById(followedUserId).populate(
+      "follows"
+    );
 
     // If the user doesn't exists, send error message
     if (!followedUser)
@@ -25,13 +27,16 @@ exports.followUser = async (req, res) => {
     const following = new Followings({
       firstName: followedUser.firstName,
       lastName: followedUser.lastName,
-      followerId: userId,
+      followerId: id,
       followedId: followedUserId,
       status: "normal",
     });
 
     await following.save();
+
+    res.status(201).json({ message: "Successfully followed user." });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       message: "Internal Server Error",
     });
@@ -140,5 +145,17 @@ exports.followBack = async (req, res, next) => {
       .catch((err) => next(err));
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+exports.getAllFollowers = async (req, res, next) => {
+  const { id } = req.body;
+
+  try {
+    const followers = await Followings.find({ followedUser: id });
+
+    return res.send(followers);
+  } catch (error) {
+    console.log(error);
   }
 };

@@ -9,7 +9,7 @@ exports.updateProfile = async (req, res) => {
     req.body;
   const { profilePicture } = req.files || {};
   try {
-    const user = await Users.findById(id);
+    const user = await Users.findById(id).populate("follows");
 
     // If user is not found, return error response
     if (!user) return res.status(400).json({ message: "Unauthorized" });
@@ -66,7 +66,7 @@ exports.getUser = async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).populate("follows");
 
     if (user == null)
       return res.status(400).json({
@@ -93,7 +93,7 @@ exports.getUser = async (req, res) => {
 // Fetch all users
 exports.getGlobalUsers = async (req, res) => {
   try {
-    const users = await Users.find({}).populate("follows");
+    const users = await Users.find().populate("follows");
 
     // Filter necessary fields
     const filteredData = users.map((item) => {

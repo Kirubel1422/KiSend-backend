@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const { mongoose, Schema } = require("mongoose");
 
 const FollowSchema = mongoose.Schema(
   {
@@ -10,7 +10,7 @@ const FollowSchema = mongoose.Schema(
       type: String,
     },
     followerId: {
-      type: mongoose.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       required: true,
     },
     status: {
@@ -19,7 +19,7 @@ const FollowSchema = mongoose.Schema(
       required: true,
     },
     followedId: {
-      type: mongoose.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       required: true,
     },
   },
